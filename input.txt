@@ -1,0 +1,7 @@
+proc test
+ret
+
+
+proc main
+call test
+ret

@@ -138,7 +138,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="runtime.cpp" />
+    <ClCompile Include="script.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="variable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="runtime.h" />
+    <ClInclude Include="script.h" />
+    <ClInclude Include="variable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
