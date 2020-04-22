@@ -7,7 +7,19 @@
 
 int main(int argC, char** argV)
 {
-	//script m_script{ "input.txt" };
 	runtime sandbox{ "input.txt" };
+	while (true)
+	{
+		try
+		{
+			std::cout << sandbox.execute() << std::endl;
+			//system("pause");
+		}
+		catch (std::exception e)
+		{
+			std::cout << "end" << std::endl;
+			break;
+		}
+	}
 	return 0;
 }

@@ -10,12 +10,14 @@ private:
 	script m_script;
 	variables m_global;
 	std::stack<int> ret_adresses;
-	std::unordered_map<std::string, size_t> functions;
-	size_t ip;
+	std::unordered_map<std::string, int> functions;
+	int ip;
 public:
 	runtime(const std::string& filename);
 	std::string execute();// executes current line and returns it
 private:
-	int find(const std::string& source, const std::string& str);
+	int find(const std::string& source, const std::string& substr);
+	int getType(const std::string& str);
+	std::string getName(const std::string& str);
 };
 
