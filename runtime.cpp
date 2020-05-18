@@ -11,7 +11,7 @@
 #define MAX_STACK_SIZE 256
 
 enum types {
-	procedure, int_var, float_var, start, call, other, _mul, _div, _sub, _add, _rem, push, pop, move_up, move_down, move_left, move_right, map, ret, comp, point, ja, jb, je, print
+	procedure, int_var, float_var, start, call, other, _mul, _div, _sub, _add, _rem, push, pop, move_up, move_down, move_left, move_right, map, ret, comp, point, ja, jb, je, print, jmp
 };
 
 std::string last_error{};
@@ -644,6 +644,27 @@ std::string runtime::execute()
 
 		return result;
 	}
+	case jmp:
+	{
+		result += m_script.source[ip];
+
+		std::string arg = getWord(m_script.source[ip], 1);
+		if (arg.empty() || !getWord(m_script.source[ip], 2).empty())
+		{
+			last_error = m_script.source[ip] + ": syntax error";
+			throw std::exception{};
+		}
+
+		if (m_points.find(arg) == m_points.end())
+		{
+			last_error = "point " + arg + " not found";
+			throw std::exception{};
+		}
+
+		ip = m_points.at(arg);
+
+		return result;
+	}
 	case print:
 	{
 		result += m_script.source[ip];
@@ -940,6 +961,10 @@ int runtime::getType(const std::string& str)
 	if (find(str, "je") == 0)
 	{
 		return je;
+	}
+	if (find(str, "jmp") == 0)
+	{
+		return jmp;
 	}
 	if (find(str, "map") == 0)
 	{

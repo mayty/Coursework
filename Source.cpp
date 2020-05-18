@@ -10,7 +10,7 @@
 int main(int argC, char** argV)
 {
 	std::string filename;
-	int i = 0;
+	int i = 1;
 	if (argC == 1)
 	{
 		return 1;
@@ -25,15 +25,15 @@ int main(int argC, char** argV)
 		while (true)
 		{
 			drawer::write(sandbox.execute(), i++, 40);
-			if (i >= 25)
+			if (i >= 24)
 			{
-				i = 0;
+				i = 1;
 			}
 		}
 	}
 	catch (...)
 	{
-		drawer::write(last_error, 25);
+		drawer::write(last_error, 24);
 	}
 	system("pause");
 	return 0;

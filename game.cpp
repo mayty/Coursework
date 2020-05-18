@@ -4,7 +4,7 @@
 const int min_width = 10;
 const int min_height = 10;
 const int max_width = 38;
-const int max_height = 22;
+const int max_height = 21;
 
 game::game(int width, int height)
 {

@@ -3,36 +3,32 @@ int x
 int y
 
 proc main
-
 main_loop:
-call get_dir
+	call get_dir
+	cmp dir 1
+	je move_up
+	cmp dir 2
+	je move_down
+	cmp dir 3
+	je move_left
+	cmp dir 4
+	je move_right
 
-cmp dir 1
-je move_up
-cmp dir 2
-je move_down
-cmp dir 3
-je move_left
-cmp dir 4
-je move_right
-
-move_up:
-moveUp
-cmp 1 1
-je main_loop
-move_down:
-moveDown
-cmp 1 1
-je main_loop
-move_left:
-moveLeft
-cmp 1 1
-je main_loop
-move_right:
-moveRight
-cmp 1 1
-je main_loop
-
+	move_up:
+	moveUp
+	cmp 1 1
+	je main_loop
+	move_down:
+	moveDown
+	cmp 1 1
+	je main_loop
+	move_left:
+	moveLeft
+	cmp 1 1
+	je main_loop
+	move_right:
+	moveRight
+	jmp main_loop
 ret
 
 
@@ -84,8 +80,7 @@ proc get_target
 			pop x
 			push x
 			push y
-			cmp 1 1
-			je get_target_nothing
+			jmp get_target_nothing
 			get_target_food:
 			pop none; remove tile data
 			pop y
