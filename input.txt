@@ -1,6 +1,108 @@
-proc test
-ret
-
 proc main
-call test
+int dir
+int fail_count
+push 1
+pop dir
+
+push 0
+pop fail_count
+
+loop:
+comp dir 1
+je dir_up
+comp dir 2
+je dir_down
+comp dir 3
+je dir_left
+comp dir 4
+je dir_right
+
+dir_up:; moving up
+sub player_y 1
+map player_x stackp
+comp stackp wall
+je dir_up_change
+moveUp
+push 0
+pop fail_count
+comp 1 1
+je loop
+
+dir_up_change:
+cmp fail_count 4
+je end
+add fail_count 1
+pop fail_count
+push 4; right
+pop dir
+comp 1 1
+je loop
+
+dir_down:
+add player_y 1
+map player_x stackp
+comp stackp wall
+je dir_down_change
+moveDown
+push 0
+pop fail_count
+comp 1 1
+je loop
+
+dir_down_change:
+cmp fail_count 4
+je end
+add fail_count 1
+pop fail_count
+push 3; left
+pop dir
+comp 1 1
+je loop
+
+
+dir_left:
+sub player_x 1
+map stackp player_y
+comp stackp wall
+je dir_left_change
+moveLeft
+push 0
+pop fail_count
+comp 1 1
+je loop
+
+dir_left_change:
+cmp fail_count 4
+je end
+add fail_count 1
+pop fail_count
+push 1; up
+pop dir
+comp 1 1
+je loop
+
+
+
+dir_right:
+add player_x 1
+map stackp 1
+comp stackp wall
+je dir_right_change
+moveRight
+push 0
+pop fail_count
+comp 1 1
+je loop
+
+dir_right_change:
+cmp fail_count 4
+je end
+add fail_count 1
+pop fail_count
+push 2; down
+pop dir
+comp 1 1
+je loop
+
+end:
 ret

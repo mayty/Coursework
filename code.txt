@@ -1,0 +1,105 @@
+int dir; 1 - up, 2 - down, 3 - left, 4 - right
+int x
+int y
+
+proc main
+
+main_loop:
+call get_dir
+
+cmp dir 1
+je move_up
+cmp dir 2
+je move_down
+cmp dir 3
+je move_left
+cmp dir 4
+je move_right
+
+move_up:
+moveUp
+cmp 1 1
+je main_loop
+move_down:
+moveDown
+cmp 1 1
+je main_loop
+move_left:
+moveLeft
+cmp 1 1
+je main_loop
+move_right:
+moveRight
+cmp 1 1
+je main_loop
+
+ret
+
+
+proc get_dir
+	call get_target
+	cmp x player_x
+	je get_dir_y
+	jb get_dir_left
+	ja get_dir_right
+	get_dir_left:
+	push 3
+	pop dir
+	ret
+	get_dir_right:	
+	push 4
+	pop dir
+	ret
+
+	get_dir_y:
+	cmp y player_y
+	ja get_dir_down
+	
+	get_dir_up:
+	push 1
+	pop dir
+	ret
+	get_dir_down:	
+	push 2
+	pop dir
+	ret
+ret
+
+proc get_target
+	int buf
+	sub field_width 1
+	get_target_loop_x:
+		push stack
+		pop buf
+		sub field_height 1
+		get_target_loop_y:
+			map buf stack
+			cmp stack food
+			je get_target_food
+			cmp stackp destination
+			ja get_target_nothing
+			jb get_target_nothing
+			get_target_dest:
+			pop y
+			pop x
+			push x
+			push y
+			cmp 1 1
+			je get_target_nothing
+			get_target_food:
+			pop none; remove tile data
+			pop y
+			pop x
+			ret
+			get_target_nothing:
+			sub stackp 1
+			cmp stack 0
+			ja get_target_loop_y
+			je get_target_loop_y		
+		pop none; remove curr y coord
+		sub stackp 1
+		cmp stack 0
+		ja get_target_loop_x
+		je get_target_loop_x
+	pop none; remove curr x coord
+ret

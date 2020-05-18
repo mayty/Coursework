@@ -14,10 +14,20 @@ script::script(std::string filename)
 		if (buf.empty())
 			continue;
 		std::string str;
-		bool write_space = true;
+		bool write_space = false;
 		int i = -1;
 		while (buf[++i])
 		{
+			if (buf[i] == ';')
+			{
+				break;
+			}
+			if (buf[i] == '{' || buf[i] == '}' || buf[i] == '.' || buf[i] == ':' || buf[i] == '_')
+			{
+				str += buf[i];
+				write_space = true;
+				continue;
+			}
 			if (buf[i] >= 'a' && buf[i] <= 'z')
 			{
 				str += buf[i];
@@ -29,6 +39,12 @@ script::script(std::string filename)
 				str += buf[i];
 				write_space = true;
 				continue;
+			}
+			if (buf[i] >= '0' && buf[i] <= '9')
+			{
+				str += buf[i];
+				write_space = true;
+				continue; 
 			}
 			if (buf[i] == '-' || buf[i] == '+' || buf[i] == '/' || buf[i] == '*' || buf[i] == '=')
 			{

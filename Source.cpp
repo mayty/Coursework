@@ -4,22 +4,37 @@
 #include <vector>
 #include "script.h"
 #include "runtime.h"
+#include "drawer.h"
+#include <Windows.h>
 
 int main(int argC, char** argV)
 {
-	runtime sandbox{ "input.txt" };
-	while (true)
+	std::string filename;
+	int i = 0;
+	if (argC == 1)
 	{
-		try
+		return 1;
+	}
+	else
+	{
+		filename = argV[1];
+	}
+	try
+	{
+		runtime sandbox{ filename };
+		while (true)
 		{
-			std::cout << sandbox.execute() << std::endl;
-			//system("pause");
-		}
-		catch (std::exception e)
-		{
-			std::cout << "end" << std::endl;
-			break;
+			drawer::write(sandbox.execute(), i++, 40);
+			if (i >= 25)
+			{
+				i = 0;
+			}
 		}
 	}
+	catch (...)
+	{
+		drawer::write(last_error, 25);
+	}
+	system("pause");
 	return 0;
 }
