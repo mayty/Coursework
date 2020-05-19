@@ -13,13 +13,14 @@ class runtime
 private:
 	typedef std::unordered_map<std::string, variable> variables;
 	typedef std::unordered_map<std::string, int> points;
+	typedef std::unordered_map<std::string, int> functions;
 	script m_script;
 	game m_game;
 	variables m_global;
 	points m_points;
-	std::stack<int> ret_adresses;
+	std::stack<int> m_ret_adresses;
 	std::stack<variable> m_stack;
-	std::unordered_map<std::string, int> functions;
+	functions m_functions;
 	int ip;
 public:
 	runtime(const std::string& filename);

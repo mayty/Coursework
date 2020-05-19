@@ -57,7 +57,7 @@ runtime::runtime(const std::string& filename)
 		case procedure:
 			try
 			{
-				functions.emplace(getName(m_script.source[i]), i);
+				m_functions.emplace(getName(m_script.source[i]), i);
 #ifdef RUNTIME_DEBUG
 				std::cout << "emplaced function " << getName(m_script.source[i]) << std::endl;
 #endif
@@ -157,9 +157,9 @@ runtime::runtime(const std::string& filename)
 			break;
 		}
 	}
-	if (functions.find("main") != functions.end())
+	if (m_functions.find("main") != m_functions.end())
 	{
-		ip = (*functions.find("main")).second;
+		ip = (*m_functions.find("main")).second;
 	}
 	else
 	{
@@ -194,28 +194,28 @@ std::string runtime::execute()
 	{
 	case ret:		// return from function
 	{
-		if (ret_adresses.empty())
+		if (m_ret_adresses.empty())
 		{
 			ip = -1;
 			return result + "ret";
 		}
-		ip = ret_adresses.top();
-		ret_adresses.pop();
+		ip = m_ret_adresses.top();
+		m_ret_adresses.pop();
 		return result + "ret";
 	}
 	case call:		// call function
 	{
-		if (ret_adresses.size() >= MAX_STACK_SIZE)
+		if (m_ret_adresses.size() >= MAX_STACK_SIZE)
 		{
 			last_error = "stack overflow";
 			throw std::exception{};
 		}
 
-		if (functions.find(getName(m_script.source[ip])) != functions.end())
+		if (m_functions.find(getName(m_script.source[ip])) != m_functions.end())
 		{
 			result += m_script.source[ip];
-			ret_adresses.push(ip + 1);
-			ip = (*functions.find(getName(m_script.source[ip]))).second;
+			m_ret_adresses.push(ip + 1);
+			ip = (*m_functions.find(getName(m_script.source[ip]))).second;
 			return result;
 		}
 		else
