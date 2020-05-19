@@ -5,7 +5,6 @@
 static HANDLE consoleHandle;
 static bool inited = false;
 
-
 void drawer::print(const std::vector<std::vector<uint8_t>>& field)
 {
 	std::cout << "|";

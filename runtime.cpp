@@ -1,14 +1,16 @@
 #include "runtime.h"
-#include <iostream>
 #include <stack>
 #include <Windows.h>
+#include "drawer.h"
 
 #define RUNTIME_DEBUG1
 #define DEMO_DISPLAY1
-
-#include "drawer.h"
-
 #define MAX_STACK_SIZE 256
+
+#ifdef DEMO_DISPLAY
+#include <iostream>
+#endif
+
 
 enum types {
 	procedure, int_var, float_var, start, call, other, _mul, _div, _sub, _add, _rem, push, pop, move_up, move_down, move_left, move_right, map, ret, comp, point, ja, jb, je, print, jmp
@@ -176,6 +178,10 @@ runtime::runtime(const std::string& filename)
 
 std::string runtime::execute()
 {
+	if (ip >= m_script.source.size())
+	{
+		ip = -1;
+	}
 	if (ip == -1)
 	{
 		last_error = "programm has already ended";
@@ -199,6 +205,12 @@ std::string runtime::execute()
 	}
 	case call:		// call function
 	{
+		if (ret_adresses.size() >= MAX_STACK_SIZE)
+		{
+			last_error = "stack overflow";
+			throw std::exception{};
+		}
+
 		if (functions.find(getName(m_script.source[ip])) != functions.end())
 		{
 			result += m_script.source[ip];
@@ -208,7 +220,7 @@ std::string runtime::execute()
 		}
 		else
 		{
-			last_error = "unknown function name \"" + getName(m_script.source[ip]) + "\"";
+			last_error = m_script.source[ip] + ": unknown function name";
 			throw std::exception{};
 		}
 		break;
@@ -480,7 +492,7 @@ std::string runtime::execute()
 		{
 			if (m_global.find(arg) == m_global.end())
 			{
-				last_error = "variable " + arg + " not found";
+				last_error = m_script.source[ip] + ": variable not found";
 				throw std::exception{};
 			}
 
@@ -573,7 +585,7 @@ std::string runtime::execute()
 
 		if (m_points.find(arg) == m_points.end())
 		{
-			last_error = "point " + arg + " not found";
+			last_error = m_script.source[ip] + ": point not found";
 			throw std::exception{};
 		}
 
@@ -601,7 +613,7 @@ std::string runtime::execute()
 
 		if (m_points.find(arg) == m_points.end())
 		{
-			last_error = "point " + arg + " not found";
+			last_error = m_script.source[ip] + ": point not found";
 			throw std::exception{};
 		}
 
@@ -629,7 +641,7 @@ std::string runtime::execute()
 
 		if (m_points.find(arg) == m_points.end())
 		{
-			last_error = "point " + arg + " not found";
+			last_error = m_script.source[ip] + ": point not found";
 			throw std::exception{};
 		}
 
@@ -657,7 +669,7 @@ std::string runtime::execute()
 
 		if (m_points.find(arg) == m_points.end())
 		{
-			last_error = "point " + arg + " not found";
+			last_error = m_script.source[ip] + ": point not found";
 			throw std::exception{};
 		}
 
@@ -691,7 +703,9 @@ std::string runtime::execute()
 		}
 		var1.reinit(get_var(arg));
 
+#ifdef DEMO_DISPLAY
 		std::cout << arg << " = " << var1 << std::endl;
+#endif
 
 		++ip;
 		return result;
@@ -831,7 +845,7 @@ std::string runtime::execute()
 		result += m_script.source[ip++];
 		return result;
 	}	
-	last_error = "invalid syntax";
+	last_error = m_script.source[ip] + ": invalid syntax";
 	throw std::exception{};
 }
 
@@ -1109,10 +1123,16 @@ arg_type get_arg_type(const std::string& str)
 
 	bool is_float = true;
 	bool is_int = true;
-
-	for (auto i : str)
+	int j = 0;
+	char i;
+	if (str[j] == '-')
 	{
-		if (i >= '0' && i <= '9' || i == '-')
+		++j;
+	}
+
+	while(i = str[j++])
+	{
+		if (i >= '0' && i <= '9')
 		{
 			continue;
 		}

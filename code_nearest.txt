@@ -1,6 +1,10 @@
 int dir; 1 - up, 2 - down, 3 - left, 4 - right
 int x
 int y
+int nx
+int ny
+int lx
+int ly
 int has_pos
 
 proc main
@@ -87,20 +91,20 @@ proc get_target
 			ja get_target_nothing
 			jb get_target_nothing
 			get_target_dest:
-			pop y
-			pop x
-			push x
-			push y
-			push 1
-			pop has_pos
+			pop ly
+			pop lx
+			push lx
+			push ly
 			jmp get_target_nothing
 			get_target_food:
 			pop none; remove tile data
-			pop y
-			pop x
+			pop ny
+			pop nx
+			push nx
+			push ny
 			push 1
 			pop has_pos
-			ret
+			call check_if_init
 			get_target_nothing:
 			sub stackp 1
 			cmp stack 0
@@ -112,8 +116,60 @@ proc get_target
 		ja get_target_loop_x
 		je get_target_loop_x
 	pop none; remove curr x coord
+cmp has_pos 1
+je get_target_end
+push lx
+pop x
+push ly
+pop y
+push 1
+pop has_pos
 get_target_end:
 ret
+
+proc check_if_init
+int diff
+cmp has_inited 0
+je check_if_init_yes
+
+; get old diff
+sub x player_x
+call make_pos
+sub y player_y
+call make_pos
+add stackp stackp
+
+; get new diff
+sub nx player_x
+call make_pos
+sub ny player_y
+call make_pos
+add stackp stackp
+
+cmp stackp stackp
+jb check_if_init_yes
+ret
+
+check_if_init_yes:
+push 1
+pop has_inited
+push nx
+pop x
+push ny
+pop y
+ret
+
+proc make_pos
+cmp stack 0
+jb make_pos_neg
+jmp make_pos_end
+
+make_pos_neg:
+mul stackp -1
+
+make_pos_end:
+ret
+
 
 
 
