@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include "script.h"
 #include "runtime.h"
 #include "drawer.h"
 #include <Windows.h>
